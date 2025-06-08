@@ -6,8 +6,8 @@
 
 // Pin konfigurasi
 #define SS_PIN    5    // SDA pin RFID
-#define RST_PIN   22   // RST pin RFID
-#define SERVO_PIN 13   // Pin sinyal servo
+#define RST_PIN   4   // RST pin RFID
+#define SERVO_PIN 2   // Pin sinyal servo
 #define LED_PIN   21   // Pin sinyal LED
 #define LCD_ADDR 0x27 // Alamat I2C LCD, sesuaikan jika berbeda
 #define LCD_COLS 16
