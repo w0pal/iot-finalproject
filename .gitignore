@@ -1,6 +1,4 @@
 .vscode/
 build/
-test/
-views/
-connected-xmpp.ino
+test-mqtt.ino
 node_modules/
