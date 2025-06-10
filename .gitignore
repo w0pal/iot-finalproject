@@ -1,2 +1,6 @@
 .vscode/
 build/
+test/
+views/
+connected-xmpp.ino
+node_modules/
