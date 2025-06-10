@@ -10,3 +10,9 @@
 
 # Wiring
 [Smart Door Lock (still in testing)](https://app.cirkitdesigner.com/project/23edc560-bfa7-4596-b353-a15f0e732d8a)
+
+# MQTT
+[HiveMQ](https://www.hivemq.com/)
+
+# CA Certificate
+[Download link](https://letsencrypt.org/certs/isrgrootx1.pem)
