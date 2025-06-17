@@ -1,0 +1,40 @@
+const mqtt = require('mqtt');
+const admin = require('firebase-admin');
+const serviceAccount = require('./your-firebase-adminsdk.json'); // Ganti dengan path ke file service account Firebase kamu
+
+// Inisialisasi Firebase
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'your-firebase-url.app' // Ganti dengan URL Firebase kamu
+});
+
+// Koneksi ke HiveMQ broker
+const client = mqtt.connect('mqtts:your-mqtt-broker:your-port', {
+    username: 'your-username',
+    password: 'your-password',
+});
+
+client.on('connect', () => {
+    console.log('Connected to MQTT broker');
+    client.subscribe('iot/door/log', (err) => {
+        if (!err) {
+            console.log('Subscribed to topic: iot/door/log');
+        } else {
+            console.error('Subscribe error:', err);
+        }
+    });
+});
+
+client.on('message', (topic, message) => {
+    console.log('Received message:', message.toString());
+    let data;
+    try {
+        data = JSON.parse(message.toString());
+    } catch (e) {
+        console.error('JSON parse error:', e);
+        return;
+    }
+    admin.database().ref('LoginData').push(data)
+        .then(() => console.log('Data pushed to Firebase:', data))
+        .catch(err => console.error('Firebase error:', err));
+});

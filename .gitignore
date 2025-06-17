@@ -1,3 +1,6 @@
 .vscode/
 build/
+node_modules/
+smart-door-lock-b9315-firebase-adminsdk-fbsvc-94575085b2.json
 test-mqtt.ino
+bridge.js
