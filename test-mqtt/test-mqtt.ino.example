@@ -46,7 +46,7 @@ PubSubClient mqttClient(secureClient);
 WebServer web(80);
 
 // Data
-String whitelist[] = { "4:E1:C9:5" };
+String whitelist[] = {"4:E1:C9:5", "BB:EB:BB:1"};
 String logs[MAX_LOGS];
 int logCount = 0;
 
@@ -56,7 +56,7 @@ void setupMQTT();
 bool connectMQTT();
 String getDateTime();
 bool isAllowed(const String&);
-void logAndPublish(const String&);
+void logAndPublish(const String& uid, const String& status);
 void setupWebServer();
 void serveLogs();
 void handleRFID();
@@ -131,11 +131,14 @@ bool isAllowed(const String &uid) {
   return false;
 }
 
-void logAndPublish(const String &uid) {
+void logAndPublish(const String &uid, const String &status) {
   String dt = getDateTime();
-  if (logCount < MAX_LOGS) logs[logCount++] = uid + "|" + dt;
-  mqttClient.publish(MQTT_TOPIC, ("UID:" + uid + " time:" + dt).c_str());
+  if (logCount < MAX_LOGS) logs[logCount++] = uid + "|" + dt + "|" + status;
+
+  String payload = "{\"uid\":\"" + uid + "\",\"time\":\"" + dt + "\",\"status\":\"" + status + "\"}";
+  mqttClient.publish(MQTT_TOPIC, payload.c_str());
 }
+
 
 void setupWebServer() {
   web.on("/", serveLogs);
@@ -166,13 +169,14 @@ void handleRFID() {
 
   lcd.clear();
   if (isAllowed(uid)) {
-    logAndPublish(uid);
+    logAndPublish(uid, "GRANTED");
     myServo.write(180);
     delay(500);
     myServo.write(0);
-    lcd.print("OK: " + uid);
+    lcd.print("Access Granted!");
   } else {
-    lcd.print("Denied: " + uid);
+    logAndPublish(uid, "DENIED");
+    lcd.print("Access Denied!");
   }
   delay(1500);
   lcd.clear(); lcd.print("Ready");
