@@ -34,7 +34,14 @@ client.on('message', (topic, message) => {
         console.error('JSON parse error:', e);
         return;
     }
-    admin.database().ref('LoginData').push(data)
-        .then(() => console.log('Data pushed to Firebase:', data))
+    // Ambil jumlah log yang sudah ada, lalu simpan dengan key berurutan
+    const dbRef = admin.database().ref('LoginData');
+    dbRef.once('value')
+        .then(snapshot => {
+            const count = snapshot.numChildren();
+            const newKey = 'card' + (count + 1);
+            return dbRef.child(newKey).set(data);
+        })
+        .then(() => console.log('Data pushed to Firebase dengan key berurutan:', data))
         .catch(err => console.error('Firebase error:', err));
 });
